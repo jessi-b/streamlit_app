@@ -7,7 +7,7 @@ from urllib.error import URLError
 streamlit.title('Healthy Dinner')
 streamlit.header('Breakfast Menu')
 streamlit.text('🥣 Omega 3 & Blueberry Oatmeal')
-streamlit.text(' 🥗 Kale, Spinach & Rocket Smoothie')
+streamlit.text('🥗 Kale, Spinach & Rocket Smoothie')
 streamlit.text('🐔 Hard-Boiled Free-Range Egg')
 streamlit.text('🥑🍞 Avocado Toast')
 
@@ -42,7 +42,7 @@ except URLError as e:
   streamlit.error()
 
 # snowflake connect: allowe user to read and write data from sf
-streamlit.header("Fruit List:")
+streamlit.header("View Our Fruit List & Add Your Favorites!")
 def get_fruit_load_list():
   with  my_cnx.cursor() as my_cur:
     # query data 
@@ -58,7 +58,7 @@ if streamlit.button('Get Fruit List'):
 def insert_row_snowflake(new_fruit):
   with my_cnx.cursor() as my_cur:
     # write data
-    my_cur.execute("insert into pc_rivery_db.public.fruit_load_list values ('from streamlit')")
+    my_cur.execute("insert into pc_rivery_db.public.fruit_load_list values ('" + new_fruit + "')")
     return ('Thanks for adding ', new_fruit)
 # take user input
 add_my_fruit = streamlit.text_input('What fruit would you like to add')
