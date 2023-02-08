@@ -46,7 +46,7 @@ except URLError as e:
   streamlit.error()
   
 # stop
-streamlit.stop()
+#streamlit.stop()
 
 # snowflake connector
 streamlit.header("Fruit List:")
