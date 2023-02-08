@@ -2,7 +2,7 @@ import streamlit
 import pandas
 import requests
 import snowflake.connector
-from urllib.error import URLError  #error handling msg
+from urllib.error import URLError
 
 streamlit.title('Healthy Dinner')
 streamlit.header('Breakfast Menu')
@@ -44,7 +44,7 @@ streamlit.dataframe(fruityvice_normalized)
 my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
 my_cur = my_cnx.cursor()
 # query data
-#my_cur.execute("select * from pc_rivery_db.public.fruit_load_list")
+my_cur.execute("select * from pc_rivery_db.public.fruit_load_list")
 my_data_rows = my_cur.fetchall()
 streamlit.header("Fruit List:")
 streamlit.dataframe(my_data_rows)
