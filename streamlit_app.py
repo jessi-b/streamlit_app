@@ -11,16 +11,17 @@ streamlit.text('🥗 Kale, Spinach & Rocket Smoothie')
 streamlit.text('🐔 Hard-Boiled Free-Range Egg')
 streamlit.text('🥑🍞 Avocado Toast')
 
-# allow user to 
+# BYOS
 streamlit.header('🍌🥭 Build Your Own Fruit Smoothie 🥝🍇')
 # read S3 bucket file
 my_fruit_list = pandas.read_csv("https://uni-lab-files.s3.us-west-2.amazonaws.com/dabw/fruit_macros.txt")
 my_fruit_list = my_fruit_list.set_index('Fruit')
-# pick list
+# user pick from list
 fruits_selected = streamlit.multiselect("Pick some fruits:", list(my_fruit_list.index))
 fruits_to_show = my_fruit_list.loc[fruits_selected]
 # add table from S3 bucket file
 streamlit.dataframe(fruits_to_show)
+
 
 # fruityvice api: allow user to query & get response
 streamlit.header("Fruityvice Fruit Advice!")
@@ -30,7 +31,8 @@ def get_fruityvice_data(this_fruit_choice):
   fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
   # create table from response
   return fruityvice_normalized
-# allow user input
+
+# take user input
 try:
   fruit_choice = streamlit.text_input('What fruit would you like information about?')
   if not fruit_choice:
@@ -41,24 +43,29 @@ try:
 except URLError as e:
   streamlit.error()
 
-# snowflake connect: allowe user to read and write data from sf
+  
+# snowflake connect: allow user to read and write data from sf
 streamlit.header("View Our Fruit List & Add Your Favorites!")
 def get_fruit_load_list():
   with  my_cnx.cursor() as my_cur:
     # query data 
     my_cur.execute("select * from pc_rivery_db.public.fruit_load_list")
     return my_cur.fetchall()
+  
 # button to load data
 if streamlit.button('Get Fruit List'):
-  # read SF metadata
+  # read data
   my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
   my_data_rows = get_fruit_load_list()
+  my_cnx.close()
   streamlit.dataframe(my_data_rows)
+  
 # allow user add fruit to the list
 def insert_row_snowflake(new_fruit):
   with my_cnx.cursor() as my_cur:
     # write data
     my_cur.execute("insert into pc_rivery_db.public.fruit_load_list values ('" + new_fruit + "')")
+    my_cnx.close()
     return ('Thanks for adding ', new_fruit)
 # take user input
 add_my_fruit = streamlit.text_input('What fruit would you like to add')
